@@ -1,0 +1,23 @@
+1)Spring Security
+2)Java 8 & 9 features
+3)How to override application.properities values by dynamically(Scanner class)
+4)WebSecurity configurationAdaptable
+5)spring boot web tokens & web sockets
+6)Spring ORM with Hibernate
+7)How to send Mail using springboot.
+8)Kafka(service distributions)
+9)Jenkins, sonarqubes, Junit , CI/CD pipelines
+10)Docker 3 tier application(angular , spring boot , MySQL)
+11)Docker Swarn
+12)spring Mesh
+13)Detailed explanation about microsoft Azuer and Aws
+14)Kubernetes ingress,volumes component & TLS configMap and secrete and aws(with Practical)
+15)How to manage Many services in single application by using Kubernetes
+16)AWS eks cluster
+17)how to send otp for mobile number
+18)What are the Standard things to do code as an Industrial purpose
+19)Explain about mangodb
+20)Explain about H2 db(with partical)
+21)Develop End to End Web APplication  with features with integration ( frontend--->Backend----->Database---->Docker / Kubernate----->AWS)
+22)How to backup the Kubernetes cluster data.
+23)how to give access the camera by using spring boot application and also timer.
