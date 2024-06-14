@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 
 @Entity
@@ -18,7 +19,7 @@ public class Student {
     private String name;
     private String surname;
     private String gender;
-    private String dob;
+    private String dob;  // Consider using java.time.LocalDate for better date handling
     private String city;
     private String mobileNo;
     private String email;
@@ -29,7 +30,7 @@ public class Student {
     private String board;
     private String school;
     private String className;
-    private String preferredTimings;
+    private String preferredTimings;  // Consider using java.time.LocalTime[] for time intervals
     private Integer daysPerWeek;
     private Integer sessionDuration;
     private String addressLine1;
@@ -48,6 +49,10 @@ public class Student {
 
     // Tutor name
     private String tutorName;
+
+    // Photo field
+    @Lob  // Large Object annotation for storing byte arrays
+    private byte[] photo;
 
     // Constructors
     public Student() {
@@ -276,5 +281,13 @@ public class Student {
 
     public void setTutorName(String tutorName) {
         this.tutorName = tutorName;
+    }
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
     }
 }

@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 import com.ght.model.Student;
 import com.ght.repository.StudentRegistrationRepository;
 
-
 @Service
 public class StudentRegistrationService {
-
 
     @Autowired
     private StudentRegistrationRepository studentRegistrationRepository;
@@ -31,7 +29,7 @@ public class StudentRegistrationService {
     public void deleteStudent(Long id) {
         studentRegistrationRepository.deleteById(id);
     }
-    
+
     public boolean authenticate(String email, String password) {
         try {
             Student student = studentRegistrationRepository.findByEmail(email);
