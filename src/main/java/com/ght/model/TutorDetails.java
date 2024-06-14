@@ -36,13 +36,9 @@ public class TutorDetails {
     @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
-
+ 
+    @Column(name = "expertInClass", nullable = false)
     private String expertInClass;
-
-    // New property: tutorName
-    
-    
-  
 
 	public TutorDetails() {
 		super();

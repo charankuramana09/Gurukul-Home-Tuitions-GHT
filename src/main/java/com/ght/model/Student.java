@@ -1,5 +1,6 @@
 package com.ght.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ public class Student {
     private String dob;  // Consider using java.time.LocalDate for better date handling
     private String city;
     private String mobileNo;
+    @Column(unique = true)
     private String email;
     private String password;
     private String confirmPassword;

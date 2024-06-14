@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ght.model.PersonalDetails;
-import com.ght.model.Student;
 import com.ght.model.TutorDetails;
 import com.ght.repository.PersonalDetailsRepository;
 import com.ght.repository.TutorDetailsRepository;
@@ -51,19 +50,16 @@ public class TutorRegistrationService {
             .collect(Collectors.toList());
     }
 
-    
     public List<Object[]> getTutors() {
         List<TutorDetails> tutorDetailsList = tutorDetailsRepository.findAll();
         return tutorDetailsList.stream()
                 .map(tutorDetails -> {
                     PersonalDetails personalDetails = personalDetailsRepository.findById(tutorDetails.getId()).orElseThrow();
-                    String base64Image = Base64.getEncoder().encodeToString(tutorDetails.getImage()); // Assuming getImage() returns byte[]
+                    String base64Image = Base64.getEncoder().encodeToString(tutorDetails.getImage());
                     return new Object[]{personalDetails.getName(), personalDetails.getEmail(), tutorDetails.getExpertInClass(), base64Image};
                 })
                 .collect(Collectors.toList());
     }
-    
-   
     
     public boolean authenticate(String email, String password) {
         try {
@@ -74,5 +70,4 @@ public class TutorRegistrationService {
             return false;
         }
     }
-    
 }

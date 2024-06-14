@@ -1,10 +1,8 @@
 package com.ght.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ght.model.Student;
 import com.ght.repository.StudentRegistrationRepository;
 
@@ -32,8 +30,20 @@ public class StudentRegistrationService {
 
     public boolean authenticate(String email, String password) {
         try {
-            Student student = studentRegistrationRepository.findByEmail(email);
-            return student != null && student.getPassword().equals(password);
+            List<Student> students = studentRegistrationRepository.findByEmail(email);
+            
+            if (students.isEmpty()) {
+                return false; // No student found
+            }
+            
+            // Optionally, log or handle the case where multiple students have the same email
+            if (students.size() > 1) {
+                System.err.println("Multiple students found with email: " + email);
+                // Handle as needed, e.g., log an error, choose the first, etc.
+            }
+
+            Student student = students.get(0); // Get the first student in the list
+            return student.getPassword().equals(password);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
