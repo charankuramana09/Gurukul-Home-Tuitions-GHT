@@ -81,7 +81,7 @@ public class StudentRegistrationController {
             student.setParentAddress(studentDetails.getParentAddress());
 
             // Update photo
-            student.setPhoto(studentDetails.getPhoto());
+            student.setImage(studentDetails.getImage());
 
             final Student updatedStudent = studentRegistrationService.saveStudent(student);
             return ResponseEntity.ok(updatedStudent);

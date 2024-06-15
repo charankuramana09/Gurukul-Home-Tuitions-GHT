@@ -1,6 +1,5 @@
 package com.ght.service;
 
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -43,9 +42,7 @@ public class TutorRegistrationService {
                     return false;
                 }
                 String[] subjects = expertInClass.toLowerCase().split(",");
-                return Arrays.stream(subjects)
-                             .map(String::trim)
-                             .anyMatch(subj -> subj.equals(subject.toLowerCase().trim()));
+                return List.of(subjects).contains(subject.toLowerCase().trim());
             })
             .collect(Collectors.toList());
     }
@@ -54,7 +51,7 @@ public class TutorRegistrationService {
         List<TutorDetails> tutorDetailsList = tutorDetailsRepository.findAll();
         return tutorDetailsList.stream()
                 .map(tutorDetails -> {
-                    PersonalDetails personalDetails = personalDetailsRepository.findById(tutorDetails.getId()).orElseThrow();
+                    PersonalDetails personalDetails = personalDetailsRepository.findById(tutorDetails.getPersonalDetails().getId()).orElseThrow();
                     String base64Image = Base64.getEncoder().encodeToString(tutorDetails.getImage());
                     return new Object[]{personalDetails.getName(), personalDetails.getEmail(), tutorDetails.getExpertInClass(), base64Image};
                 })
