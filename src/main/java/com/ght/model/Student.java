@@ -48,6 +48,7 @@ public class Student {
     private String motherPhone;
     private String motherEmail;
     private String parentAddress;
+    
     @Lob
     @Column(name = "image", columnDefinition = "LONGBLOB")
     private byte[] image;
