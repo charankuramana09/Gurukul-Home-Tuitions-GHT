@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ght.model.PersonalDetails;
-import com.ght.model.Student;
 import com.ght.model.TutorDetails;
 import com.ght.service.TutorRegistrationService;
 
@@ -32,8 +31,6 @@ public class TutorRegistrationController {
 
     @Autowired
     private TutorRegistrationService tutorRegistrationService;
-    
-  
 
     private final Path rootLocation = Paths.get("uploads");
 
@@ -45,7 +42,6 @@ public class TutorRegistrationController {
         }
     }
 
-    
     private byte[] storeFile(MultipartFile file) {
         try {
             // Validate filename
@@ -61,7 +57,6 @@ public class TutorRegistrationController {
         }
     }
 
-
     @PostMapping("/register")
     public ResponseEntity<?> registerTutor(
             @RequestParam("name") String name,
@@ -72,10 +67,7 @@ public class TutorRegistrationController {
             @RequestParam("mobileNo") String mobileNo,
             @RequestParam("email") String email,
             @RequestParam("password") String password,
-            @RequestParam(value = "maths", required = false) String maths,
-            @RequestParam(value = "physics", required = false) String physics,
-            @RequestParam(value = "chemistry", required = false) String chemistry,
-            @RequestParam(value = "social", required = false) String social,
+            @RequestParam(value = "subjects") String[] subjects, // Expecting array of subjects
             @RequestParam("resume") MultipartFile resume,
             @RequestParam("drivingLicense") MultipartFile drivingLicense,
             @RequestParam("addressProof") MultipartFile addressProof,
@@ -99,45 +91,30 @@ public class TutorRegistrationController {
             tutorDetails.setAddressProof(storeFile(addressProof));
 
             if (!photo.isEmpty()) {
-//                tutorDetails.setImage(photo.getBytes());
-            	 tutorDetails.setImage(storeFile(photo));
+                tutorDetails.setImage(storeFile(photo));
             }
-            
-            StringBuilder selectedSubjects = new StringBuilder();
 
-            if (maths.equals("true")) {
-                selectedSubjects.append("Maths ");
-            }
-            if (chemistry.equals("true")) {
-                selectedSubjects.append("Chemistry ");
-            }
-            if (physics.equals("true")) {
-                selectedSubjects.append("Physics ");
-            }
-            if (social.equals("true")) {
-                selectedSubjects.append("Social ");
-            }
-            tutorDetails.setExpertInClass(String.join(",", selectedSubjects));
+            // Join subjects into a comma-separated string
+            String subjectsJoined = String.join(",", subjects);
+            tutorDetails.setExpertInClass(subjectsJoined);
 
-            
             TutorDetails registeredTutor = tutorRegistrationService.registerTutor(tutorDetails);
             return new ResponseEntity<>(registeredTutor, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to register tutor: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/{id}")
     public Optional<TutorDetails> getEntityById(@PathVariable Long id) {
         return tutorRegistrationService.findById(id);
     }
-    
+
     @GetMapping
     public List<TutorDetails> getAllTutors() {
         return tutorRegistrationService.getAllTutors();
     }
-    
-    
+
     @GetMapping("/by-subject")
     public ResponseEntity<List<TutorDetails>> getTutorsBySubject(@RequestParam String subject) {
         List<TutorDetails> tutors = tutorRegistrationService.getTutorsBySubject(subject);
@@ -146,21 +123,19 @@ public class TutorRegistrationController {
         }
         return ResponseEntity.ok(tutors);
     }
+
     @GetMapping("/fields")
     public List<Object[]> getTutors() {
         return tutorRegistrationService.getTutors();
     }
-    
-    
-    
+
     @PostMapping("/login")
-    public String login(@RequestBody PersonalDetails personalDetails) {
+    public ResponseEntity<String> login(@RequestBody PersonalDetails personalDetails) {
         boolean isAuthenticated = tutorRegistrationService.authenticate(personalDetails.getEmail(), personalDetails.getPassword());
         if (isAuthenticated) {
-            return "Login successful";
+            return new ResponseEntity<>("Login successful", HttpStatus.OK);
         } else {
-            return "Invalid email or password";
+            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
         }
     }
-    
 }

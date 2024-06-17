@@ -1,5 +1,6 @@
 package com.ght.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,7 +16,9 @@ public class PersonalDetails {
     private String gender;
     private String dob;
     private String city;
+    @Column(unique = true)
     private String mobileNo;
+    @Column(unique = true)
     private String email;
     private String password;
 
