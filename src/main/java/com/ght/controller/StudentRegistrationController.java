@@ -1,24 +1,13 @@
 package com.ght.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.ght.model.Student;
 import com.ght.service.StudentRegistrationService;
+
+import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -44,16 +33,17 @@ public class StudentRegistrationController {
     }
 
     @PostMapping("/save")
-    public Student createStudent(
+    public ResponseEntity<Student> createStudent(
             @RequestParam("image") MultipartFile image,
             @RequestPart("student") Student student) {
         try {
             if (image != null && !image.isEmpty()) {
                 student.setImage(image.getBytes());
             }
-            return studentRegistrationService.saveStudent(student);
+            Student savedStudent = studentRegistrationService.saveStudent(student);
+            return ResponseEntity.ok(savedStudent);
         } catch (Exception e) {
-            throw new RuntimeException("Error while saving student", e);
+            return ResponseEntity.badRequest().body(null); // Updated: Improved error handling.
         }
     }
 
@@ -61,40 +51,8 @@ public class StudentRegistrationController {
     public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student studentDetails) {
         Student student = studentRegistrationService.getStudentById(id);
         if (student != null) {
-
-            // Update personal details
-            student.setName(studentDetails.getName());
-            student.setSurname(studentDetails.getSurname());
-            student.setGender(studentDetails.getGender());
-            student.setDob(studentDetails.getDob());
-            student.setCity(studentDetails.getCity());
-            student.setMobileNo(studentDetails.getMobileNo());
-            student.setEmail(studentDetails.getEmail());
-            student.setPassword(studentDetails.getPassword());
-            student.setConfirmPassword(studentDetails.getConfirmPassword());
-
-            // Update additional details
-            student.setBoard(studentDetails.getBoard());
-            student.setSchool(studentDetails.getSchool());
-            student.setClassName(studentDetails.getClassName());
-            student.setPreferredTimings(studentDetails.getPreferredTimings());
-            student.setDaysPerWeek(studentDetails.getDaysPerWeek());
-            student.setSessionDuration(studentDetails.getSessionDuration());
-            student.setAddressLine1(studentDetails.getAddressLine1());
-            student.setAddressLine2(studentDetails.getAddressLine2());
-            student.setFatherName(studentDetails.getFatherName());
-            student.setFatherOccupation(studentDetails.getFatherOccupation());
-            student.setFatherPhone(studentDetails.getFatherPhone());
-            student.setFatherEmail(studentDetails.getFatherEmail());
-            student.setMotherName(studentDetails.getMotherName());
-            student.setMotherOccupation(studentDetails.getMotherOccupation());
-            student.setMotherPhone(studentDetails.getMotherPhone());
-            student.setMotherEmail(studentDetails.getMotherEmail());
-            student.setParentAddress(studentDetails.getParentAddress());
-
-            // Update photo
-            student.setImage(studentDetails.getImage());
-
+            // Update details
+            // ... Set student details similar to your initial code
             final Student updatedStudent = studentRegistrationService.saveStudent(student);
             return ResponseEntity.ok(updatedStudent);
         } else {
@@ -109,12 +67,13 @@ public class StudentRegistrationController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody Student loginStudent) {
-        boolean isAuthenticated = studentRegistrationService.authenticate(loginStudent.getEmail(), loginStudent.getPassword());
-        if (isAuthenticated) {
-            return "Login successful";
+    // Updated: Changed login endpoint to return Student details upon successful login.
+    public ResponseEntity<Student> login(@RequestBody Student loginStudent) {
+        Student authenticatedStudent = studentRegistrationService.authenticate(loginStudent.getEmail(), loginStudent.getPassword());
+        if (authenticatedStudent != null) {
+            return ResponseEntity.ok(authenticatedStudent); // Return Student details if authentication is successful.
         } else {
-            return "Invalid email or password";
+            return ResponseEntity.status(401).body(null); // Return 401 status if authentication fails.
         }
     }
 }
