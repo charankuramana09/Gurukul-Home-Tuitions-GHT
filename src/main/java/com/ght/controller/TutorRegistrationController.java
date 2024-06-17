@@ -138,4 +138,15 @@ public class TutorRegistrationController {
             return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
         }
     }
+    
+    @GetMapping("/by-email")
+    public ResponseEntity<?> getTutorByEmail(@RequestParam("email") String email) {
+        Optional<TutorDetails> tutorDetails = tutorRegistrationService.getTutorByEmail(email);
+        
+        if (tutorDetails.isPresent()) {
+            return new ResponseEntity<>(tutorDetails.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Tutor not found for email: " + email, HttpStatus.NOT_FOUND);
+        }
+    }
 }
