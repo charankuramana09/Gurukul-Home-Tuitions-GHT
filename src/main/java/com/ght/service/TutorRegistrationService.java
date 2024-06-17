@@ -67,4 +67,13 @@ public class TutorRegistrationService {
             return false;
         }
     }
+    public Optional<TutorDetails> getTutorByEmail(String email) {
+        Optional<PersonalDetails> personalDetails = Optional.ofNullable(personalDetailsRepository.findByEmail(email));
+        
+        if (personalDetails.isPresent()) {
+            return tutorDetailsRepository.findByPersonalDetails(personalDetails.get());
+        }
+        
+        return Optional.empty();
+    }
 }
