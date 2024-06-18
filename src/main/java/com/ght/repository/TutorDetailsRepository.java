@@ -17,4 +17,14 @@ public interface TutorDetailsRepository extends JpaRepository<TutorDetails, Long
 
     @Query("SELECT t.personalDetails.name, t.personalDetails.email, t.expertInClass, t.image FROM TutorDetails t")
     List<Object[]> findTutors();
+
+     
+    @Query("SELECT t FROM PersonalDetails p INNER JOIN TutorDetails t ON p.id = t.id " +
+    "WHERE p.email = :email")
+List findByPersonalDetails(@Param("email") String email);  
+
+@Query("SELECT p.email, p.name, t.image, t.expertInClass FROM PersonalDetails p INNER JOIN TutorDetails t ON p.id = t.id WHERE p.email = :email")
+List findByPersonalDetailsdashboard(@Param("email") String email);  
+
+
 }

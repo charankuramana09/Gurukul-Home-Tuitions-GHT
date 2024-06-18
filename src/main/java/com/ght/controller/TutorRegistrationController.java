@@ -140,7 +140,7 @@ public class TutorRegistrationController {
     }
     
     @GetMapping("/by-email")
-    public ResponseEntity<?> getTutorByEmail(@RequestParam("email") String email) {
+    public ResponseEntity<?> getTutorByEmails(@RequestParam("email") String email) {
         Optional<TutorDetails> tutorDetails = tutorRegistrationService.getTutorByEmail(email);
         
         if (tutorDetails.isPresent()) {
@@ -149,4 +149,15 @@ public class TutorRegistrationController {
             return new ResponseEntity<>("Tutor not found for email: " + email, HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<List> getTutorByEmail(@PathVariable String email) {
+        List tutors = tutorRegistrationService.getTutorByEmailDashboard(email);
+        if (!tutors.isEmpty()) {
+            return ResponseEntity.ok(tutors);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    
 }
