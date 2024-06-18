@@ -68,6 +68,13 @@ public class TutorRegistrationService {
         
         return Optional.empty();
     }
+<<<<<<< HEAD
    
 
+=======
+
+    public List getTutorByEmailDashboard(String email) {
+        return tutorDetailsRepository.findByPersonalDetailsdashboard(email);
+    }
+>>>>>>> 9faffcd2fbcfb3ec7ddb62f8c4d101d2b96346ab
 }
