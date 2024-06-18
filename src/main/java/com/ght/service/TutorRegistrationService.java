@@ -33,18 +33,9 @@ public class TutorRegistrationService {
     public List<TutorDetails> getAllTutors() {
         return tutorDetailsRepository.findAll();
     }
-    
+
     public List<TutorDetails> getTutorsBySubject(String subject) {
-        return tutorDetailsRepository.findAll().stream()
-            .filter(tutor -> {
-                String expertInClass = tutor.getExpertInClass();
-                if (expertInClass == null || expertInClass.isEmpty()) {
-                    return false;
-                }
-                String[] subjects = expertInClass.toLowerCase().split(",");
-                return List.of(subjects).contains(subject.toLowerCase().trim());
-            })
-            .collect(Collectors.toList());
+        return tutorDetailsRepository.findTutorsBySubject(subject.toLowerCase());
     }
 
     public List<Object[]> getTutors() {
@@ -67,6 +58,7 @@ public class TutorRegistrationService {
             return false;
         }
     }
+
     public Optional<TutorDetails> getTutorByEmail(String email) {
         Optional<PersonalDetails> personalDetails = Optional.ofNullable(personalDetailsRepository.findByEmail(email));
         
@@ -76,4 +68,6 @@ public class TutorRegistrationService {
         
         return Optional.empty();
     }
+   
+
 }

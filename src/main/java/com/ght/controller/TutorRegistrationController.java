@@ -115,14 +115,7 @@ public class TutorRegistrationController {
         return tutorRegistrationService.getAllTutors();
     }
 
-    @GetMapping("/by-subject")
-    public ResponseEntity<List<TutorDetails>> getTutorsBySubject(@RequestParam String subject) {
-        List<TutorDetails> tutors = tutorRegistrationService.getTutorsBySubject(subject);
-        if (tutors.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(tutors);
-    }
+    
 
     @GetMapping("/fields")
     public List<Object[]> getTutors() {
@@ -149,4 +142,13 @@ public class TutorRegistrationController {
             return new ResponseEntity<>("Tutor not found for email: " + email, HttpStatus.NOT_FOUND);
         }
     }
+    @GetMapping("/by-subject")
+    public ResponseEntity<List<TutorDetails>> getTutorsBySubject(@RequestParam String subject) {
+        List<TutorDetails> tutors = tutorRegistrationService.getTutorsBySubject(subject);
+        if (tutors.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(tutors);
+    }
+
 }

@@ -17,4 +17,12 @@ public interface TutorDetailsRepository extends JpaRepository<TutorDetails, Long
 
     @Query("SELECT t.personalDetails.name, t.personalDetails.email, t.expertInClass, t.image FROM TutorDetails t")
     List<Object[]> findTutors();
+
+    // New query to find tutors by subject expertise
+    @Query("SELECT t FROM TutorDetails t WHERE LOWER(t.expertInClass) LIKE %:subject%")
+    List<TutorDetails> findTutorsBySubject(@Param("subject") String subject);
+    
+    @Query("SELECT t FROM TutorDetails t WHERE t.expertInClass LIKE %:subject%")
+    List<TutorDetails> findBySubject(@Param("subject") String subject);
+
 }
