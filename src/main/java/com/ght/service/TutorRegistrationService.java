@@ -8,9 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ght.model.PersonalDetails;
 import com.ght.model.TutorDetails;
-import com.ght.repository.PersonalDetailsRepository;
 import com.ght.repository.TutorDetailsRepository;
 
 @Service
@@ -18,14 +16,11 @@ public class TutorRegistrationService {
 
     @Autowired
     private TutorDetailsRepository tutorDetailsRepository;
-    
-    @Autowired
-    private PersonalDetailsRepository personalDetailsRepository;
 
     public TutorDetails registerTutor(TutorDetails tutorDetails) {
         return tutorDetailsRepository.save(tutorDetails);
     }
-    
+
     public Optional<TutorDetails> findById(Long id) {
         return tutorDetailsRepository.findById(id);
     }
@@ -42,39 +37,33 @@ public class TutorRegistrationService {
         List<TutorDetails> tutorDetailsList = tutorDetailsRepository.findAll();
         return tutorDetailsList.stream()
                 .map(tutorDetails -> {
-                    PersonalDetails personalDetails = personalDetailsRepository.findById(tutorDetails.getPersonalDetails().getId()).orElseThrow();
                     String base64Image = Base64.getEncoder().encodeToString(tutorDetails.getImage());
-                    return new Object[]{personalDetails.getName(), personalDetails.getEmail(), tutorDetails.getExpertInClass(), base64Image};
+                    return new Object[]{tutorDetails.getName(), tutorDetails.getEmail(), tutorDetails.getExpertInClass(), base64Image};
                 })
                 .collect(Collectors.toList());
     }
-    
-    public boolean authenticate(String email, String password) {
+
+    public Optional<TutorDetails> authenticate(String email, String password) {
         try {
-            PersonalDetails personalDetails = personalDetailsRepository.findByEmail(email);
-            return personalDetails != null && personalDetails.getPassword().equals(password);
+            Optional<TutorDetails> tutorDetailsOptional = tutorDetailsRepository.findByEmail(email);
+            if (tutorDetailsOptional.isPresent()) {
+                TutorDetails tutorDetails = tutorDetailsOptional.get();
+                if (tutorDetails.getPassword().equals(password)) {
+                    return tutorDetailsOptional; // Return tutorDetails if authentication successful
+                }
+            }
+            return Optional.empty(); // Return empty optional if authentication fails
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return Optional.empty(); // Return empty optional on exception
         }
     }
 
     public Optional<TutorDetails> getTutorByEmail(String email) {
-        Optional<PersonalDetails> personalDetails = Optional.ofNullable(personalDetailsRepository.findByEmail(email));
-        
-        if (personalDetails.isPresent()) {
-            return tutorDetailsRepository.findByPersonalDetails(personalDetails.get());
-        }
-        
-        return Optional.empty();
+        return tutorDetailsRepository.findByEmail(email);
     }
-<<<<<<< HEAD
-   
 
-=======
-
-    public List getTutorByEmailDashboard(String email) {
-        return tutorDetailsRepository.findByPersonalDetailsdashboard(email);
+    public List<Object[]> getTutorByEmailDashboard(String email) {
+        return tutorDetailsRepository.findByPersonalDetailsDashboard(email);
     }
->>>>>>> 9faffcd2fbcfb3ec7ddb62f8c4d101d2b96346ab
 }

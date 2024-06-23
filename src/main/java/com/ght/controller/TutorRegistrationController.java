@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ght.model.PersonalDetails;
 import com.ght.model.TutorDetails;
 import com.ght.service.TutorRegistrationService;
 
@@ -44,13 +43,10 @@ public class TutorRegistrationController {
 
     private byte[] storeFile(MultipartFile file) {
         try {
-            // Validate filename
             String filename = file.getOriginalFilename();
             if (filename == null || filename.contains("..")) {
                 throw new RuntimeException("Invalid file path");
             }
-
-            // Return the byte array of the file content
             return file.getBytes();
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file", e);
@@ -67,34 +63,28 @@ public class TutorRegistrationController {
             @RequestParam("mobileNo") String mobileNo,
             @RequestParam("email") String email,
             @RequestParam("password") String password,
-            @RequestParam(value = "subjects") String[] subjects, // Expecting array of subjects
+            @RequestParam(value = "subjects") String[] subjects,
             @RequestParam("resume") MultipartFile resume,
             @RequestParam("drivingLicense") MultipartFile drivingLicense,
             @RequestParam("addressProof") MultipartFile addressProof,
             @RequestParam("photo") MultipartFile photo
     ) {
         try {
-            PersonalDetails personalDetails = new PersonalDetails();
-            personalDetails.setName(name);
-            personalDetails.setSurname(surname);
-            personalDetails.setGender(gender);
-            personalDetails.setDob(dob);
-            personalDetails.setCity(city);
-            personalDetails.setMobileNo(mobileNo);
-            personalDetails.setEmail(email);
-            personalDetails.setPassword(password);
-
             TutorDetails tutorDetails = new TutorDetails();
-            tutorDetails.setPersonalDetails(personalDetails);
+            tutorDetails.setName(name);
+            tutorDetails.setSurname(surname);
+            tutorDetails.setGender(gender);
+            tutorDetails.setDob(dob);
+            tutorDetails.setCity(city);
+            tutorDetails.setMobileNo(mobileNo);
+            tutorDetails.setEmail(email);
+            tutorDetails.setPassword(password);
             tutorDetails.setResume(storeFile(resume));
             tutorDetails.setDrivingLicense(storeFile(drivingLicense));
             tutorDetails.setAddressProof(storeFile(addressProof));
-
             if (!photo.isEmpty()) {
                 tutorDetails.setImage(storeFile(photo));
             }
-
-            // Join subjects into a comma-separated string
             String subjectsJoined = String.join(",", subjects);
             tutorDetails.setExpertInClass(subjectsJoined);
 
@@ -106,63 +96,70 @@ public class TutorRegistrationController {
     }
 
     @GetMapping("/{id}")
-    public Optional<TutorDetails> getEntityById(@PathVariable Long id) {
-        return tutorRegistrationService.findById(id);
+    public ResponseEntity<Optional<TutorDetails>> getEntityById(@PathVariable Long id) {
+        Optional<TutorDetails> tutorDetails = tutorRegistrationService.findById(id);
+        if (tutorDetails.isPresent()) {
+            return new ResponseEntity<>(tutorDetails, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping
-    public List<TutorDetails> getAllTutors() {
-        return tutorRegistrationService.getAllTutors();
+    public ResponseEntity<List<TutorDetails>> getAllTutors() {
+        List<TutorDetails> tutors = tutorRegistrationService.getAllTutors();
+        if (tutors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
-    
-
     @GetMapping("/fields")
-    public List<Object[]> getTutors() {
-        return tutorRegistrationService.getTutors();
+    public ResponseEntity<List<Object[]>> getTutors() {
+        List<Object[]> tutors = tutorRegistrationService.getTutors();
+        if (tutors.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody PersonalDetails personalDetails) {
-        boolean isAuthenticated = tutorRegistrationService.authenticate(personalDetails.getEmail(), personalDetails.getPassword());
-        if (isAuthenticated) {
-            return new ResponseEntity<>("Login successful", HttpStatus.OK);
+    public ResponseEntity<?> login(@RequestBody TutorDetails tutorDetails) {
+        Optional<TutorDetails> authenticatedTutor = tutorRegistrationService.authenticate(tutorDetails.getEmail(), tutorDetails.getPassword());
+        
+        if (authenticatedTutor.isPresent()) {
+            return ResponseEntity.ok(authenticatedTutor.get());
         } else {
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
     }
-    
+
     @GetMapping("/by-email")
     public ResponseEntity<?> getTutorByEmails(@RequestParam("email") String email) {
         Optional<TutorDetails> tutorDetails = tutorRegistrationService.getTutorByEmail(email);
-        
         if (tutorDetails.isPresent()) {
             return new ResponseEntity<>(tutorDetails.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("Tutor not found for email: " + email, HttpStatus.NOT_FOUND);
         }
     }
-<<<<<<< HEAD
+
     @GetMapping("/by-subject")
     public ResponseEntity<List<TutorDetails>> getTutorsBySubject(@RequestParam String subject) {
         List<TutorDetails> tutors = tutorRegistrationService.getTutorsBySubject(subject);
         if (tutors.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return ResponseEntity.ok(tutors);
+        return new ResponseEntity<>(tutors, HttpStatus.OK);
     }
-
-=======
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<List> getTutorByEmail(@PathVariable String email) {
-        List tutors = tutorRegistrationService.getTutorByEmailDashboard(email);
+    public ResponseEntity<List<Object[]>> getTutorByEmail(@PathVariable String email) {
+        List<Object[]> tutors = tutorRegistrationService.getTutorByEmailDashboard(email);
         if (!tutors.isEmpty()) {
-            return ResponseEntity.ok(tutors);
+            return new ResponseEntity<>(tutors, HttpStatus.OK);
         } else {
-            return ResponseEntity.notFound().build();
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-    
->>>>>>> 9faffcd2fbcfb3ec7ddb62f8c4d101d2b96346ab
 }
