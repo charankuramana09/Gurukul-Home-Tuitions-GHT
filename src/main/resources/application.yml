@@ -1,0 +1,24 @@
+
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gurukul?autoReconnect=true&allowPublicKeyretrieval=true&useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: root
+    hikari:
+      initialization-fail-timeout: 0
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher

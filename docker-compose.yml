@@ -1,0 +1,59 @@
+# version: "3"
+# services:
+#   gurukul-home-tuitions-springboot:
+#     build: .
+#     ports:
+#       - 8000:5555
+#     restart: always 
+#     depends_on:
+#       - mysqldb
+#     environment:
+#       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/mydb
+#       SPRING_DATASOURCE_USERNAME: root
+#       SPRING_DATASOURCE_PASSWORD: root
+
+      
+#   mysqldb:
+#     container_name: mysqldb
+#     image: mysql:8.0
+#     volumes:
+#       - ../Users/sivap/Desktop/new:/var/lib/mysql
+#     ports:
+#       - 3307:3306
+#     # environment:
+#     #   - MYSQL_ROOT_PASSWORD:root
+#     #   - MYSQL_DATABASE:gurukul
+#     environment:
+#       MYSQL_ROOT_PASSWORD: root
+#       MYSQL_DATABASE: gurukul
+#       MYSQL_USER: root
+#       MYSQL_PASSWORD: root
+       
+
+version: '3.8'
+
+services:
+  springboot-app: 
+    image: sivaisign/tutor-backend:latest
+    ports:
+       - 5555:5555
+    environment:
+       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/gurukul?autoReconnect=true&allowPublicKeyretrieval=true&useSSL=false
+       SPRING_DATASOURCE_USERNAME: admin
+       SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+        - db
+     
+  db:
+    image: mysql:8.0.27
+    environment:
+       DATABASE_HOST: docker-mysql
+       DATABASE_PORT: 3306
+       MYSQL_ROOT_PASSWORD: root
+       MYSQL_DATABASE: gurukul
+       MYSQL_USER: admin
+       MYSQL_PASSWORD: root
+        
+    
+     
+ 
