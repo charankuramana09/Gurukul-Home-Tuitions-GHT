@@ -20,4 +20,7 @@ public class ArrangeSeat {
     private String tutor;
     private String classLevel;
     private LocalDate date;
+    
+    
+    
 }
