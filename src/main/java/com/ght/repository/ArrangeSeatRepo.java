@@ -11,13 +11,17 @@ import com.ght.model.ArrangeSeat;
 public interface ArrangeSeatRepo extends JpaRepository<ArrangeSeat, Long>{
     
 
-
     @Query("SELECT a.name, a.subject,a.email, COUNT(*) FROM ArrangeSeat a WHERE a.tutor = :tutor GROUP BY a.name,a.subject,a.email")
     List<Object[]> countBySubject(@Param("tutor") String tutor);
     
-
+    
     @Query("SELECT COUNT(a) FROM ArrangeSeat a WHERE a.subject = :subject")
-    Long countStudentsBySubject(@Param("subject") String subject);
+    Long countStudentsBySubject(@Param("subject") String subject);   
+    
+    
+    @Query("SELECT a.tutor, a.subject FROM ArrangeSeat a WHERE a.name = :name GROUP BY a.tutor,a.subject,a.email")
+    List<Object[]> countBySubjectStd(@Param("name") String name);
 
     
+ 
 }

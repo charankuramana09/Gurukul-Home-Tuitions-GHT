@@ -10,5 +10,7 @@ public interface ArrangeSeatService {
 	
 	  public List<Object[]> countBySubject(String tutorName);
 	  
+	  public List<Object[]> countBySubjectStd(String name);
+	  
 	 public Long countStudentsBySubject(String subject);	
 }

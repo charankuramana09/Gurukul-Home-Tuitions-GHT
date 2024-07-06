@@ -24,6 +24,10 @@ public class ArrangeSeatServiceImpl implements ArrangeSeatService{
 	        return arrangeSeatRepo.countBySubject(subject);
 	    }
 	  
+	  public List<Object[]> countBySubjectStd(String name) {
+		  return arrangeSeatRepo.countBySubjectStd(name);
+	  }
+	  
 	  
 	    public Long countStudentsBySubject(String subject) {
 	        return arrangeSeatRepo.countStudentsBySubject(subject);

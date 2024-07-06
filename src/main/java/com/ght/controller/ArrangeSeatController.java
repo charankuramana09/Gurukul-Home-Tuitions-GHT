@@ -24,19 +24,29 @@ public class ArrangeSeatController {
 	@Autowired
 	private ArrangeSeatService arrangeSeatService;
 	
+	
 	@PostMapping("/save")
 	public ArrangeSeat bookSeat(@RequestBody ArrangeSeat arrangeSeat) {
 		return arrangeSeatService.saveRegistration(arrangeSeat);
 	}
+	
 	
 	  @GetMapping("/countBySubject")
 	  public List<Object[]> countBySubject(@RequestParam String tutorName) {
 	        return arrangeSeatService.countBySubject(tutorName);
 	   } 
 	  
+	  
+	  @GetMapping("/countBySubject/std")
+	  public List<Object[]> countBySubjectStd(@RequestParam String name) {
+		  return arrangeSeatService.countBySubjectStd(name);
+	  }
+	  	
+	  
 	   @GetMapping("/count/{subject}")
 	    public ResponseEntity<Long> countStudentsBySubject(@PathVariable("subject") String subject) {
 	        Long count = arrangeSeatService.countStudentsBySubject(subject);
 	        return ResponseEntity.ok(count);
 	    }
+	   
 }
